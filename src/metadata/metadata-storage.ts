@@ -3,7 +3,7 @@ type PropertyMetadataMap = Map<PropertyKey, MetadataValueMap>;
 type MetadataValueMap = Map<PropertyKey, unknown>;
 
 export class MetadataStorage {
-  private storage = new WeakMap<object, PropertyMetadataMap>();
+  private _storage = new WeakMap<object, PropertyMetadataMap>();
   private readonly CLASS_METADATA = Symbol("class_metadata")
 
   defineMetadata(
@@ -12,13 +12,13 @@ export class MetadataStorage {
     target: object, 
     propertyKey?: PropertyKey
   ): void {
-    if (!this.storage.has(target)) {
-      this.storage.set(target, new Map());
+    if (!this._storage.has(target)) {
+      this._storage.set(target, new Map());
     }
 
     const PROPERTY_KEY = propertyKey ?? this.CLASS_METADATA;
 
-    const propertyMetadataMap = this.storage.get(target)!;
+    const propertyMetadataMap = this._storage.get(target)!;
 
     if (!propertyMetadataMap.has(PROPERTY_KEY)) {
       propertyMetadataMap.set(PROPERTY_KEY, new Map());
@@ -29,7 +29,7 @@ export class MetadataStorage {
   }
 
   getMetadata<MetaValue>(metadataKey: PropertyKey, target: object, propertyKey?: PropertyKey): MetaValue | undefined {
-    const propertyMetadataMap = this.storage.get(target);
+    const propertyMetadataMap = this._storage.get(target);
 
     if (!propertyMetadataMap) return undefined;
 
@@ -41,6 +41,10 @@ export class MetadataStorage {
 
   hasMetadata(metadataKey: PropertyKey, target: object, propertyKey?: PropertyKey): boolean {
     return this.getMetadata(metadataKey, target, propertyKey) !== undefined;
+  }
+
+  get storage() {
+    return this._storage;
   }
 }
 
