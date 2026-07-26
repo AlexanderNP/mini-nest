@@ -1,15 +1,7 @@
 import { metadataStorage } from "../metadata/metadata-storage";
-import { CONTROLLER_METADATA_KEY, GET_METADATA_KEY } from "../metadata/metadata-keys";
-import { HttpMethods } from "../constants";;
+import { CONTROLLER_METADATA_KEY, ROUTE_METADATA } from "../metadata/metadata-keys";
 import { normalizePath } from "../utils";
-import type { Constructor } from "../types";
-
-interface RouteDefinition {
-  routePath: string;
-  method: HttpMethods;
-  controller: Constructor
-  handlerName: string;
-}
+import type { Constructor, RouteMetadata, RouteDefinition } from "../types";
 
 export class ControllerScanner {
   scan(controllers: Constructor[]): RouteDefinition[] {
@@ -25,19 +17,19 @@ export class ControllerScanner {
       for (const method of methods) {
         if (method === "constructor") continue;
 
-        const path = metadataStorage.getMetadata<string>(
-          GET_METADATA_KEY,
+        const routeMetadata = metadataStorage.getMetadata<RouteMetadata>(
+          ROUTE_METADATA,
           controller.prototype,
           method,
         );
 
-        if (path === undefined) continue
+        if (routeMetadata === undefined) continue
 
         results.push({
           controller,
           handlerName: method,
-          method: HttpMethods.GET,
-          routePath: normalizePath(`${prefix}${path}`),
+          method: routeMetadata.method,
+          routePath: normalizePath(`${prefix}${routeMetadata.path}`),
         })
       }
 

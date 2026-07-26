@@ -1,4 +1,4 @@
 import { HttpMethods } from "../constants";
 import { createMethodDecorator } from "./createMethodDecorator";
 
-export const Get = createMethodDecorator(HttpMethods.GET);
+export const Patch = createMethodDecorator(HttpMethods.PATCH);
