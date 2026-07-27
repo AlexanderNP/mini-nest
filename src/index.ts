@@ -1,24 +1,39 @@
-// class User {
-//   constructor(
-//     public name: string,
-//   ) {}
-// }
+import { HttpMethods } from "./constants";
+import { Controller } from "./decorators/controller";
+import { Get } from "./decorators/get";
+import { router } from "./router/router";
+import { controllerScanner } from "./scanner/controller-scanner";
 
-// const user = new User("Egor");
+@Controller("/users")
+class UserController {
 
-// console.log(user);
+  private users = ["Egor"];
 
-function Log(target: object, propertyKey: string | symbol) {
-  console.log(`Decorator: ${String(propertyKey)}`);
+  @Get("/")
+  list() {
+    return this.users;
+  }
+
+  @Get("/count")
+  count() {
+    return this.users.length;
+  }
 }
 
-class User {
-  @Log
-  name = "Egor";
-}
+const routes = controllerScanner.scan([
+  UserController
+]);
 
-new User();
+router.register(routes);
 
-const foo = 5;
-
-const user = { name: "Egor" };
+console.log(
+  routes,
+  router.handle(
+    HttpMethods.GET,
+    "/users"
+  ),
+  router.handle(
+    HttpMethods.GET,
+    "/users/count"
+  )
+);

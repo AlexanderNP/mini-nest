@@ -38,3 +38,5 @@ export class ControllerScanner {
     return results;
   }
 }
+
+export const controllerScanner = new ControllerScanner();
