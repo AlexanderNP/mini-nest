@@ -1,5 +1,7 @@
+import { GUARDS_METADATA_KEY } from "../metadata/metadata-keys";
+import { metadataStorage } from "../metadata/metadata-storage";
 import type { HttpMethods } from "../constants";
-import type { RouteDefinition } from "../types";
+import type { GuardConstructor, RouteDefinition } from "../types";
 
 type RoutePathMap = Map<string, RouteDefinition>;
 
@@ -30,11 +32,28 @@ export class Router {
       throw Error("Route not found");
     }
 
+    this.checkGuards(route);
+
     const controller = new route.controller();
 
     const handler = controller[route.handlerName];
 
     return handler.call(controller);
+  }
+
+  private checkGuards(route: RouteDefinition): void {
+    const guardConstructors = metadataStorage.getMetadata<GuardConstructor[]>(GUARDS_METADATA_KEY, route.controller.prototype, route.handlerName) ?? [];
+
+    for (const guardConstructor of guardConstructors) {
+      const guard = new guardConstructor();
+
+      // TODO: получать роль из HTTP Request (Sprint 7)
+      const canActivate = guard.canActivate({ route, currentRole: "admin" });
+
+       if (canActivate === false) {
+        throw Error("Forbidden");
+      }
+    }
   }
 }
 

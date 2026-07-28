@@ -12,3 +12,14 @@ export interface RouteDefinition {
     controller: Constructor;
     handlerName: string;
 }
+
+export interface GuardContext {
+    route: RouteDefinition;
+    currentRole: string;
+}
+
+export interface Guard {
+    canActivate(context: GuardContext): boolean;
+}
+
+export type GuardConstructor = Constructor<Guard>;
