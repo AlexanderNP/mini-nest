@@ -107,7 +107,7 @@
 
 ---
 
-# 🚀 Sprint 4 — Router
+# ✅ Sprint 4 — Router
 
 **Цель:** научиться выполнять обработчики по зарегистрированным маршрутам.
 
@@ -121,16 +121,20 @@
 
 ---
 
-# 🚀 Sprint 5 — Guards
+# ✅ Sprint 5 — Guards
 
 **Цель:** реализовать простую авторизацию через metadata.
 
 ### Задачи
 
 - [x] Декоратор `@Roles()`
-- [x] Запись Roles metadata
-- [x] Guard
-- [x] Проверка доступа
+- [x] Декоратор `@UseGuards()`
+- [x] Реализация `Guard` интерфейса
+- [x] Реализация `RolesGuard`
+- [x] Поддержка нескольких Guard
+- [x] Выполнение Guard перед вызовом обработчика
+- [x] Запрет доступа через исключение
+- [x] Отвязать Router от конкретной реализации Guard
 
 ---
 
@@ -140,12 +144,20 @@
 
 ### Задачи
 
-- [ ] Создать собственный DI Container
-- [ ] Регистрация providers
-- [ ] Поиск зависимостей
-- [ ] Constructor Injection
-- [ ] Использование metadata для определения зависимостей
-- [ ] Связать DI Container с контроллерами
+- [x] Создать собственный DI Container
+- [x] Регистрация providers
+- [x] Singleton Providers
+- [x] Рекурсивное разрешение зависимостей
+- [x] Constructor Injection через `static inject`
+
+### Следующий этап
+
+- [ ] Подключить `reflect-metadata`
+- [ ] Изучить `emitDecoratorMetadata`
+- [ ] Использовать `design:paramtypes`
+- [ ] Удалить `static inject`
+- [ ] Связать DI Container с Router
+- [ ] Создавать контроллеры через Container
 
 ---
 
@@ -182,6 +194,7 @@
 ```text
 src
 ├── constants
+├── container
 ├── controllers
 ├── decorators
 ├── guards
@@ -251,3 +264,15 @@ HTTP Response
 - жизненный цикл HTTP-запроса;
 - принцип работы декораторов в реальных проектах;
 - типичные вопросы по этой теме на технических собеседованиях.
+
+# 🚀 Что уже реализовано
+
+- собственная реализация Metadata Storage;
+- HTTP-декораторы (`@Controller`, `@Get`, `@Post`, ...);
+- Scanner, строящий таблицу маршрутов;
+- Router с поиском обработчиков;
+- Guards с поддержкой нескольких Guard;
+- собственный DI Container;
+- Constructor Injection;
+- Singleton Providers;
+- рекурсивное разрешение зависимостей.
